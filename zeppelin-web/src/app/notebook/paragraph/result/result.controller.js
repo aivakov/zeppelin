@@ -29,7 +29,7 @@ import Result from './result';
 const AnsiUp = require('ansi_up');
 const AnsiUpConverter = new AnsiUp.default; // eslint-disable-line new-parens,new-cap
 const TableGridFilterTemplate = require('../../../visualization/builtins/visualization-table-grid-filter.html');
-var xss = require('xss');
+var xss = require('dompurify');
 
 angular.module('zeppelinWebApp').controller('ResultCtrl', ResultCtrl);
 
@@ -460,17 +460,17 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
     const elem = angular.element(`#${targetElemId}`);
     handleData(data, DefaultDisplayType.HTML,
       (generated) => {
-        console.log("Filtering angular.");
-          var filtered = xss(generated);
-            console.log(filtered !== generated);
+          
+          var filtered = xss.sanitize(generated);
+          
             if (filtered !== generated) {
                 $scope.untrusted = true;
                 $scope.untrustedCode = generated;
                 $scope.untrustedElem = elem;
                 return;
             }
-        
-        elem.html(xss(generated));
+            
+        elem.html(generated);
         elem.find('pre code').each(function(i, e) {
           hljs.highlightBlock(e);
         });
@@ -497,12 +497,13 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
     handleData(data, DefaultDisplayType.ANGULAR,
       (generated) => {
           console.log("Filtering angular.");
-          var filtered = xss(generated);
+          var filtered = xss.sanitize(generated);
             console.log(filtered !== generated);
             if (filtered !== generated) {
                 $scope.untrusted = true;
                 $scope.untrustedCode = generated;
                 $scope.untrustedElem = elem;
+                paragraph.config.editorHide = false;
                 return;
             }
         
