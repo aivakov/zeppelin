@@ -116,7 +116,6 @@ limitations under the License.
     <div id="p{{id}}_angular"
          class="resultContained"
          ng-if="type == 'ANGULAR'"
-         ng-show="!untrusted"
          ng-style="getPointerEvent()">
     </div>
 
@@ -128,7 +127,7 @@ limitations under the License.
   
         <div class="alert alert-danger"
             ng-show="untrusted">
-            The results of this paragraph contain untrusted code that may be a threat if executed on your machine. Please review the code and click here to display the results anyway.
+            The results of this paragraph contain untrusted code that may be a threat if executed on your machine. Please review the code above and click here to display the results anyway.
             <button class="btn btn-primary" ng-click="trustResults();">Trust</button>
         </div>
 
