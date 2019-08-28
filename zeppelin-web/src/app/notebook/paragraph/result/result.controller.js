@@ -489,6 +489,7 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
       const paragraphScope = noteVarShareService.get(`${paragraph.id}_paragraphScope`);
       $scope.untrustedElem.html($scope.untrustedCode);
       $compile($scope.untrustedElem.contents())(paragraphScope);
+      paragraph.config.editorHide = true;
   }
   
   const renderAngular = function(targetElemId, data) {
