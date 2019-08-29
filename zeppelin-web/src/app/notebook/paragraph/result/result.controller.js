@@ -29,7 +29,7 @@ import Result from './result';
 const AnsiUp = require('ansi_up');
 const AnsiUpConverter = new AnsiUp.default; // eslint-disable-line new-parens,new-cap
 const TableGridFilterTemplate = require('../../../visualization/builtins/visualization-table-grid-filter.html');
-var xss = require('dompurify');
+let xss = require('dompurify');
 
 angular.module('zeppelinWebApp').controller('ResultCtrl', ResultCtrl);
 
@@ -160,7 +160,7 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
 
   // queue for append output
   const textResultQueueForAppend = [];
-  
+
   $scope.untrusted = false;
 
   // prevent body area scrollbar from blocking due to scroll in paragraph results
@@ -460,16 +460,14 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
     const elem = angular.element(`#${targetElemId}`);
     handleData(data, DefaultDisplayType.HTML,
       (generated) => {
-          
-          var filtered = xss.sanitize(generated);
-          
-            if (filtered !== generated) {
-                $scope.untrusted = true;
-                $scope.untrustedCode = generated;
-                $scope.untrustedElem = elem;
-                return;
-            }
-            
+        let filtered = xss.sanitize(generated);
+        if (filtered !== generated) {
+          $scope.untrusted = true;
+          $scope.untrustedCode = generated;
+          $scope.untrustedElem = elem;
+          return;
+        }
+
         elem.html(generated);
         elem.find('pre code').each(function(i, e) {
           hljs.highlightBlock(e);
@@ -482,32 +480,28 @@ function ResultCtrl($scope, $rootScope, $route, $window, $routeParams, $location
       }
     );
   };
-  
+
   $scope.trustResults = function() {
-      console.log("Trusting results");
-      $scope.untrusted = false;
-      const paragraphScope = noteVarShareService.get(`${paragraph.id}_paragraphScope`);
-      $scope.untrustedElem.html($scope.untrustedCode);
-      $compile($scope.untrustedElem.contents())(paragraphScope);
-      paragraph.config.editorHide = true;
-  }
-  
+    $scope.untrusted = false;
+    const paragraphScope = noteVarShareService.get(`${paragraph.id}_paragraphScope`);
+    $scope.untrustedElem.html($scope.untrustedCode);
+    $compile($scope.untrustedElem.contents())(paragraphScope);
+    paragraph.config.editorHide = true;
+  };
+
   const renderAngular = function(targetElemId, data) {
     const elem = angular.element(`#${targetElemId}`);
     const paragraphScope = noteVarShareService.get(`${paragraph.id}_paragraphScope`);
     handleData(data, DefaultDisplayType.ANGULAR,
       (generated) => {
-          console.log("Filtering angular.");
-          var filtered = xss.sanitize(generated);
-            console.log(filtered !== generated);
-            if (filtered !== generated) {
-                $scope.untrusted = true;
-                $scope.untrustedCode = generated;
-                $scope.untrustedElem = elem;
-                paragraph.config.editorHide = false;
-                return;
-            }
-        
+        let filtered = xss.sanitize(generated);
+        if (filtered !== generated) {
+          $scope.untrusted = true;
+          $scope.untrustedCode = generated;
+          $scope.untrustedElem = elem;
+          paragraph.config.editorHide = false;
+          return;
+        }
         elem.html(generated);
         $compile(elem.contents())(paragraphScope);
       },
